@@ -1,0 +1,55 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #e9e9e9; /* Light background color */
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #0f106e;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="file"] {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #0f106e;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #4b1b73; /* Darken button color on hover */
+}
+
+h3 {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  color: #0f106e;
+}
+
+img {
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
+}

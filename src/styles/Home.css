@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #0f106e 0%, #4b43a2 45%, #3958aa 100%); /* Smoother gradient */
+    background: -moz-radial-gradient(circle, #0f106e 0%, #4b43a2 45%, #3958aa 100%);
+    background: -webkit-radial-gradient(circle, #0f106e 0%, #4b43a2 45%, #3958aa 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0f106e", endColorstr="#3958aa", GradientType=1);
+    color: white;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.25rem;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: black; /* Change text color to black */
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    margin-top: 20px;
+}
+
+.explore-button {
+    background-color: #ef745c;
+}
+
+.student-button {
+    background-color: #4CAF50;
+}
+
+.supervisor-button {
+    background-color: #2196F3;
+}
+
+button:hover {
+    opacity: 0.8;
+}

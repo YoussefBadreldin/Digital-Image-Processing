@@ -1,0 +1,85 @@
+/* src/Navbar.css */
+.navbar {
+  background-color: white;
+  padding: 15px 20px; /* Increased padding for better spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0; /* Ensure the navbar starts from the left edge */
+  right: 0; /* Ensure it extends to the right edge */
+  width: 100%; /* Ensure it spans the full width */
+  z-index: 1000; /* Ensures it stays on top */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow for separation */
+  margin: 0; /* Reset any default margin */
+}
+
+.navbar-logo a {
+  color: #0f106e; /* Updated logo color */
+  font-size: 28px; /* Increased font size */
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo-image {
+  width: 180px; /* Adjust logo size */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 10px; /* Space between logo and text */
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 30px; /* Increased gap for better spacing */
+  margin: 0; /* Reset any default margin */
+}
+
+.navbar-links li {
+  display: inline;
+}
+
+.navbar-links a {
+  color: #0f106e; /* Updated link color */
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.navbar-links a:hover {
+  color: #0f106e; /* Hover color stays the same */
+  text-decoration: underline;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 15px;
+  margin-left: 60px; /* Increase space on the left side */
+  padding-right: 200px; /* Increased padding to move buttons further to the right */
+}
+
+.navbar-button {
+  background-color: #0f106e; /* Button background color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Added transition for scaling */
+}
+
+.navbar-button:hover {
+  background-color: #0f106e; /* Keep same background color on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.navbar-button:active {
+  background-color: #0f106e; /* Keep same background color on active */
+}
+
+body {
+  padding-top: 80px; /* To prevent the content from hiding under the navbar */
+}
