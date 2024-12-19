@@ -17,7 +17,7 @@ const Enhance = () => {
     formData.append("action", "enhance");
 
     const response = await fetch(
-      "https://digital-image-processing-backend.vercel.app/process",
+      "https://digital-image-processing-backend.vercel.app/enhance",
       {
         method: "POST",
         body: formData,

@@ -17,7 +17,7 @@ const Segment = () => {
     formData.append("action", "segment");
 
     const response = await fetch(
-      "https://digital-image-processing-backend.vercel.app/process",
+      "https://digital-image-processing-backend.vercel.app/segment",
       {
         method: "POST",
         body: formData,

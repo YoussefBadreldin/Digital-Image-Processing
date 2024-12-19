@@ -17,7 +17,7 @@ const Compress = () => {
     formData.append("action", "compress");
 
     const response = await fetch(
-      "https://digital-image-processing-backend.vercel.app/process",
+      "https://digital-image-processing-backend.vercel.app/compress",
       {
         method: "POST",
         body: formData,
