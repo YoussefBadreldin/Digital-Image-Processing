@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import '../styles/Segment.css'; // Ensure to add the related styles
+import '../styles/Segment.css'; // Update the stylesheet name for segmentation if needed
 
 const Segment = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [originalImage, setOriginalImage] = useState("");
-  const [segmentedImages, setSegmentedImages] = useState([]);
+  const [resultImages, setResultImages] = useState([]);
   const [segmentationTypes, setSegmentationTypes] = useState({
-    watershed_segmentation: false,
     thresholding: false,
+    watershed: false,
   });
-  const [thresholdValue, setThresholdValue] = useState(128); // Default threshold value
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,10 +33,6 @@ const Segment = () => {
     }));
   };
 
-  const handleThresholdChange = (e) => {
-    setThresholdValue(e.target.value);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile) return;
@@ -47,17 +42,15 @@ const Segment = () => {
 
     let formData = new FormData();
     formData.append("image", selectedFile);
-    formData.append("threshold", thresholdValue); // Pass threshold value for thresholding technique
 
-    const newSegmentedImages = [];
+    const newResultImages = [];
 
-    // Loop through the selected segmentation types (Watershed Segmentation and Thresholding)
+    // Loop through the selected segmentation types (thresholding, watershed)
     for (const [segmentationType, isSelected] of Object.entries(segmentationTypes)) {
       if (isSelected) {
         try {
-          const endpoint = segmentationType === "watershed_segmentation" ? "watershed" : "thresholding";
           const response = await fetch(
-            `http://127.0.0.1:5000/segment/${endpoint}`,
+            `http://127.0.0.1:5000/segment/${segmentationType}`,
             {
               method: "POST",
               body: formData,
@@ -70,8 +63,8 @@ const Segment = () => {
 
           const blob = await response.blob();
           const imageURL = URL.createObjectURL(blob);
-          newSegmentedImages.push({
-            type: segmentationType === "watershed_segmentation" ? "Watershed Segmentation" : "Thresholding",
+          newResultImages.push({
+            type: segmentationType === "thresholding" ? "Thresholding" : "Watershed Segmentation",
             url: imageURL,
           });
         } catch (error) {
@@ -81,7 +74,7 @@ const Segment = () => {
       }
     }
 
-    setSegmentedImages(newSegmentedImages);
+    setResultImages(newResultImages);
     setLoading(false); // Hide loading spinner
   };
 
@@ -94,38 +87,22 @@ const Segment = () => {
           <label>
             <input
               type="checkbox"
-              name="watershed_segmentation"
-              checked={segmentationTypes.watershed_segmentation}
-              onChange={handleSegmentationTypeChange}
-            />
-            Watershed
-          </label>
-          <label>
-            <input
-              type="checkbox"
               name="thresholding"
               checked={segmentationTypes.thresholding}
               onChange={handleSegmentationTypeChange}
             />
             Thresholding
           </label>
+          <label>
+            <input
+              type="checkbox"
+              name="watershed"
+              checked={segmentationTypes.watershed}
+              onChange={handleSegmentationTypeChange}
+            />
+            Watershed
+          </label>
         </div>
-
-        {segmentationTypes.thresholding && (
-          <div>
-            <label>
-              Set Threshold Value:
-              <input
-                type="range"
-                min="0"
-                max="255"
-                value={thresholdValue}
-                onChange={handleThresholdChange}
-              />
-              <span>{thresholdValue}</span>
-            </label>
-          </div>
-        )}
 
         <label>Upload Photo:</label>
         <input type="file" onChange={handleFileChange} />
@@ -144,10 +121,10 @@ const Segment = () => {
           </div>
         )}
 
-        {!loading && segmentedImages.length > 0 && segmentedImages.map((image, index) => (
+        {!loading && resultImages.length > 0 && resultImages.map((image, index) => (
           <div className="segmented-image" key={index}>
-            <h3>{image.type} Result</h3>
-            <img src={image.url} alt={`${image.type} Result`} />
+            <h3>{image.type}</h3>
+            <img src={image.url} alt={`${image.type}`} />
             <a href={image.url} download={`${image.type}_segmented_image`}>
               <button>Download</button>
             </a>
