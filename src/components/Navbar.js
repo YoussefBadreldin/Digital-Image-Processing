@@ -1,23 +1,31 @@
 // src/Navbar.js
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "../styles/Navbar.css"; // Adjust the path if needed
+import "../styles/Navbar.css"; // Ensure this path is correct
 import Logo from "../assets/HOR_LOGO.png"; // Ensure this path is correct
 
 function Navbar({ isLoggedIn, username }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to track the dropdown menu
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen); // Toggle the menu state
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
         <Link to="/">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="navbar-logo-image"
-          />
+          <img src={Logo} alt="Logo" className="navbar-logo-image" />
         </Link>
       </div>
-      <ul className="navbar-links">
-        {/* Service buttons come first */}
+      
+      {/* Hamburger icon for mobile */}
+      <div className="navbar-hamburger" onClick={toggleMenu}>
+        &#9776; {/* Unicode hamburger icon */}
+      </div>
+
+      {/* Links that will show up on mobile in dropdown */}
+      <ul className={`navbar-links ${isMenuOpen ? "show" : ""}`}>
         <li>
           <Link to="/enhance">
             <button className="navbar-button">Enhance a Photo</button>
@@ -34,7 +42,7 @@ function Navbar({ isLoggedIn, username }) {
           </Link>
         </li>
 
-        {/* Sign In button if not logged in */}
+        {/* Login button if not logged in */}
         {!isLoggedIn && (
           <li>
             <Link to="/signin">
@@ -43,7 +51,7 @@ function Navbar({ isLoggedIn, username }) {
           </li>
         )}
 
-        {/* Login/Logout button logic */}
+        {/* Display welcome and logout button if logged in */}
         {isLoggedIn && (
           <>
             <li>Welcome, {username}!</li>

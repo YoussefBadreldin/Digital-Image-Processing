@@ -1,14 +1,14 @@
 /* src/Navbar.css */
 .navbar {
   background-color: white;
-  padding: 15px 20px; /* Increased padding for better spacing */
+  padding: 15px 20px; /* Adjust padding for better spacing */
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Align the content to the left */
   align-items: center;
   position: fixed;
   top: 0;
-  left: 0; /* Ensure the navbar starts from the left edge */
-  right: 0; /* Ensure it extends to the right edge */
+  left: 0;
+  right: 0;
   width: 100%; /* Ensure it spans the full width */
   z-index: 1000; /* Ensures it stays on top */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow for separation */
@@ -16,10 +16,6 @@
 }
 
 .navbar-logo a {
-  color: #0f106e; /* Updated logo color */
-  font-size: 28px; /* Increased font size */
-  font-weight: bold;
-  text-decoration: none;
   display: flex;
   align-items: center;
 }
@@ -27,14 +23,16 @@
 .navbar-logo-image {
   width: 180px; /* Adjust logo size */
   height: auto; /* Maintain aspect ratio */
-  margin-right: 10px; /* Space between logo and text */
+  border: none; /* Remove any border or frame */
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 30px; /* Increased gap for better spacing */
-  margin: 0; /* Reset any default margin */
+  gap: 100px; /* Adjusted gap between buttons */
+  margin: 0;
+  margin-left: 250px; /* Adjusted left margin for better spacing */
+  transition: all 0.3s ease; /* Smooth transition for mobile menu */
 }
 
 .navbar-links li {
@@ -49,17 +47,11 @@
 }
 
 .navbar-links a:hover {
-  color: #0f106e; /* Hover color stays the same */
+  color: #0056b3; /* Hover color stays the same */
   text-decoration: underline;
 }
 
-.navbar-buttons {
-  display: flex;
-  gap: 15px;
-  margin-left: 60px; /* Increase space on the left side */
-  padding-right: 200px; /* Increased padding to move buttons further to the right */
-}
-
+/* Common Button Style */
 .navbar-button {
   background-color: #0f106e; /* Button background color */
   color: white;
@@ -72,14 +64,57 @@
 }
 
 .navbar-button:hover {
-  background-color: #0f106e; /* Keep same background color on hover */
+  background-color: #0056b3; /* Slightly different background color on hover */
   transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
 
 .navbar-button:active {
-  background-color: #0f106e; /* Keep same background color on active */
+  background-color: #003c7d; /* Darker background on active */
 }
 
-body {
-  padding-top: 80px; /* To prevent the content from hiding under the navbar */
+/* Hamburger Icon for Mobile */
+.navbar-hamburger {
+  display: none; /* Hide hamburger icon by default */
+  font-size: 30px;
+  cursor: pointer;
+  color: #0f106e; /* Color of the hamburger icon */
+  margin-left: auto; /* Move hamburger icon to the right */
+  padding-right: 50px; /* Add extra padding to move it further right */
+}
+
+/* Mobile Dropdown Menu */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none; /* Hide the navbar links by default on mobile */
+    width: 100%; /* Full-width dropdown menu */
+    flex-direction: column; /* Stack the items vertically */
+    align-items: center; /* Center items */
+    position: absolute;
+    top: 60px; /* Dropdown position */
+    left: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds shadow to dropdown */
+  }
+
+  .navbar-links.show {
+    display: flex; /* Show the dropdown when the menu is open */
+  }
+
+  .navbar-hamburger {
+    display: block; /* Show the hamburger icon on mobile */
+  }
+
+  .navbar-logo {
+    margin-left: 10px; /* Adjust space between logo and hamburger */
+  }
+
+  .navbar-links li {
+    width: 100%; /* Make the buttons take full width of the dropdown */
+    text-align: center; /* Center text on buttons */
+  }
+
+  .navbar-links a {
+    padding: 10px 20px;
+    display: block; /* Make the link fill the button space */
+  }
 }
