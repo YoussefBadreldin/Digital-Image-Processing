@@ -82,7 +82,7 @@ const Compress = () => {
     <div className="page-container">
       <h1>Compress a Photo</h1>
       <form onSubmit={handleSubmit}>
-        <label>Choose Compression Types:</label>
+        <label>Choose Compression Technique:</label>
         <div>
           <label>
             <input
@@ -123,10 +123,10 @@ const Compress = () => {
 
         {!loading && resultImages.length > 0 && resultImages.map((image, index) => (
           <div className="compressed-image" key={index}>
-            <h3>{image.type} Compressed Image</h3>
+            <h3>{image.type} Compressed</h3>
             <img src={image.url} alt={`${image.type} Compressed`} />
             <a href={image.url} download={`${image.type}_compressed_image`}>
-              <button>Download Compressed Image</button>
+              <button>Download</button>
             </a>
           </div>
         ))}

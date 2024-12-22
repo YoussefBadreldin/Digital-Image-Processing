@@ -1,7 +1,21 @@
+/* src/App.css */
 .App {
   text-align: center;
+  padding-top: 50px; /* Increased padding to push content 5 times more */
+  scroll-padding-top: 50px; /* Adjusted to match the new padding for anchor links */
 }
 
+/* Ensure the container or main content has enough padding-top */
+.container {
+  padding-top: 400px; /* Increased padding to match the new navbar height */
+}
+
+/* Ensure anchor links scroll correctly with respect to the fixed navbar */
+html {
+  scroll-behavior: smooth; /* Smooth scrolling when navigating to anchor links */
+}
+
+/* App logo animation and size */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -13,6 +27,7 @@
   }
 }
 
+/* Header styling - keeps header in the center with background */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,15 +39,24 @@
   color: white;
 }
 
+/* Link styling */
 .App-link {
   color: #61dafb;
 }
 
+/* Keyframe for logo spinning */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Mobile view adjustments for smaller screens */
+@media (max-width: 768px) {
+  .App {
+    padding-top: 500px; /* Adjust this value for mobile screens to match the larger navbar height */
   }
 }
