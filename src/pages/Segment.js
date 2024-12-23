@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../styles/Segment.css'; // Update the stylesheet name for segmentation if needed
+import '../styles/Segment.css'; // Ensure this file includes the correct styles
 
 const Segment = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -136,6 +136,18 @@ const Segment = () => {
           <div key={index} className="segmentation-result">
             <h3>{image.type}</h3>
             <img src={`http://localhost:5000${image.url}`} alt={image.type} />
+            {/* Directly download the image without opening it in a new tab */}
+            <button
+              className="download-button"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = `http://localhost:5000${image.url}`;
+                link.download = `${image.type}_segmented_image`;
+                link.click();
+              }}
+            >
+              Download
+            </button>
           </div>
         ))}
       </div>
