@@ -50,7 +50,7 @@ const Segment = () => {
       if (isSelected) {
         try {
           const response = await fetch(
-            `http://127.0.0.1:5000/segment/${segmentationType}`,
+            `http://127.0.0.1:5000/segment/${segmentationType === "thresholding" ? "global-threshold" : "watershed-segmentation"}`,
             {
               method: "POST",
               body: formData,
@@ -61,12 +61,23 @@ const Segment = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          const blob = await response.blob();
-          const imageURL = URL.createObjectURL(blob);
-          newResultImages.push({
-            type: segmentationType === "thresholding" ? "Thresholding" : "Watershed Segmentation",
-            url: imageURL,
-          });
+          const { global_threshold_image_url, adaptive_threshold_image_url, watershed_segmented_image_url } = await response.json();
+
+          if (segmentationType === "thresholding") {
+            newResultImages.push({
+              type: "Global Thresholding",
+              url: global_threshold_image_url,
+            });
+            newResultImages.push({
+              type: "Adaptive Thresholding",
+              url: adaptive_threshold_image_url,
+            });
+          } else if (segmentationType === "watershed") {
+            newResultImages.push({
+              type: "Watershed Segmentation",
+              url: watershed_segmented_image_url,
+            });
+          }
         } catch (error) {
           console.error("Error fetching API:", error);
           setError("Failed to process the image. Please try again.");
@@ -122,12 +133,9 @@ const Segment = () => {
         )}
 
         {!loading && resultImages.length > 0 && resultImages.map((image, index) => (
-          <div className="segmented-image" key={index}>
+          <div key={index} className="segmentation-result">
             <h3>{image.type}</h3>
-            <img src={image.url} alt={`${image.type}`} />
-            <a href={image.url} download={`${image.type}_segmented_image`}>
-              <button>Download</button>
-            </a>
+            <img src={`http://localhost:5000${image.url}`} alt={image.type} />
           </div>
         ))}
       </div>
