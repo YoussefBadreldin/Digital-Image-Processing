@@ -3,7 +3,7 @@
   background-color: white;
   padding: 15px 20px; /* Adjust padding for better spacing */
   display: flex;
-  justify-content: flex-start; /* Align the content to the left */
+  justify-content: space-between; /* Changed to space-between to push items apart */
   align-items: center;
   position: fixed;
   top: 0;
@@ -29,9 +29,10 @@
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 100px; /* Adjusted gap between buttons */
+  gap: 20px;
   margin: 0;
-  margin-left: 250px; /* Adjusted left margin for better spacing */
+  margin-left: auto; /* Push links to the right */
+  margin-right: 50px; /* Added right margin to move button left */
   transition: all 0.3s ease; /* Smooth transition for mobile menu */
 }
 
@@ -79,7 +80,7 @@
   cursor: pointer;
   color: #0f106e; /* Color of the hamburger icon */
   margin-left: auto; /* Move hamburger icon to the right */
-  padding-right: 50px; /* Add extra padding to move it further right */
+  padding-right: 20px; /* Add extra padding to move it further right */
 }
 
 /* Mobile Dropdown Menu */

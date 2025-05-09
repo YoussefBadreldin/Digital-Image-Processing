@@ -1,46 +1,70 @@
 .signin-container {
   text-align: center;
   padding: 20px;
+  max-width: 400px;
+  margin: 100px auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .signin-container h2 {
   margin-bottom: 20px;
   color: #fff;
+  font-size: 24px;
 }
 
 .signin-container form input {
   display: block;
   margin: 10px auto;
-  padding: 10px;
+  padding: 12px;
   width: 80%;
   max-width: 400px;
-  border: 1px solid #9154ad;
+  border: 1px solid #0f106e;
   border-radius: 5px;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .signin-container form button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #0f106e;
   color: #fff;
   cursor: pointer;
   font-size: 16px;
+  transition: all 0.3s ease;
+  width: 80%;
+  max-width: 400px;
+  margin-top: 20px;
 }
 
 .signin-container form button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
 .social-login {
   margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
 .social-login img {
-  width: 50px;
-  height: 50px;
-  margin: 0 10px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.social-login img:hover {
+  transform: scale(1.1);
+}
+
+.footer-links {
+  margin-top: 20px;
 }
 
 .footer-links a {
@@ -48,8 +72,10 @@
   margin: 10px 0;
   color: white;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
+  color: #0f106e;
   text-decoration: underline;
 }
