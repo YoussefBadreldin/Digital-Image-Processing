@@ -73,7 +73,7 @@ button:hover {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  padding-top: 600px; /* Reduced from 80px to 60px to decrease space */
+  padding-top: 650px; /* Reduced from 80px to 60px to decrease space */
   min-height: calc(350vh - 600px); /* Adjusted to match new padding-top */
   box-sizing: border-box;
 }
