@@ -170,8 +170,8 @@ function Home() {
             <h2>Developed by</h2>
             <ul className="team-list">
               <li>20100294 - Youssef Mohamed Badreldin</li>
-              <li>ID - Name</li>
-              <li>ID - Name</li>
+              <li>22100951 - Alhassan Mohamed Elsayed</li>
+              <li>22100859 - Hicham Hussein Mohamed</li>
 
             </ul>
           </div>
