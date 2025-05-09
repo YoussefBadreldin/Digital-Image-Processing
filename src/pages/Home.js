@@ -29,6 +29,13 @@ function Home() {
     fileInputRef.current.click();
   };
 
+  const handleChangeFile = () => {
+    setSelectedFile(null);
+    setOriginalImage("");
+    setResultImages([]);
+    fileInputRef.current.click();
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -71,13 +78,29 @@ function Home() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const blob = await response.blob();
-      const imageURL = URL.createObjectURL(blob);
-      setResultImages([{
-        type: getEnhancementTypeName(selectedTechnique),
-        description: getEnhancementDescription(selectedTechnique),
-        url: imageURL,
-      }]);
+      const data = await response.json();
+      
+      if (data.success && data.image) {
+        const imageURL = `data:image/jpeg;base64,${data.image}`;
+        const result = {
+          type: getEnhancementTypeName(selectedTechnique),
+          description: getEnhancementDescription(selectedTechnique),
+          url: imageURL,
+        };
+
+        // Add visualization data if available
+        if (selectedTechnique === 'histogram_equalization' && data.histogram_original && data.histogram_equalized) {
+          result.histogramOriginal = `data:image/png;base64,${data.histogram_original}`;
+          result.histogramEqualized = `data:image/png;base64,${data.histogram_equalized}`;
+        } else if (selectedTechnique === 'gray_level_slicing' && data.transform_plot && data.histogram_plot) {
+          result.transformPlot = `data:image/png;base64,${data.transform_plot}`;
+          result.histogramPlot = `data:image/png;base64,${data.histogram_plot}`;
+        }
+
+        setResultImages([result]);
+      } else {
+        throw new Error(data.error || "Failed to process image");
+      }
     } catch (error) {
       console.error("Error fetching API:", error);
       setError("Failed to process the image. Please try again.");
@@ -156,25 +179,39 @@ function Home() {
       ) : (
         <div className="enhancement-section">
           <div className="upload-container">
-            <div 
-              className="upload-box" 
-              onDragOver={(e) => e.preventDefault()} 
-              onDrop={handleDrop}
-              onClick={handleUploadClick}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*"
-                className="file-input"
-              />
-              <div className="upload-content">
-                <i className="upload-icon">📁</i>
-                <p>Drag and drop an image here or click to select</p>
-                <p className="file-types">Supported formats: JPG, PNG, WebP</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+              className="file-input"
+            />
+            {!selectedFile ? (
+              <div 
+                className="upload-box" 
+                onDragOver={(e) => e.preventDefault()} 
+                onDrop={handleDrop}
+                onClick={handleUploadClick}
+              >
+                <div className="upload-content">
+                  <i className="upload-icon">📁</i>
+                  <p>Drag and drop an image here or click to select</p>
+                  <p className="file-types">Supported formats: JPG, PNG, WebP</p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="selected-file">
+                <div className="selected-file-content">
+                  <img src={URL.createObjectURL(selectedFile)} alt="Selected" className="preview-image" />
+                  <div className="file-info">
+                    <p className="file-name">{selectedFile.name}</p>
+                    <button className="change-file-button" onClick={handleChangeFile}>
+                      Change File
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="enhancement-options">
@@ -218,21 +255,54 @@ function Home() {
           <div className="results-container">
             {!loading && originalImage && (
               <div className="image-comparison">
-                <div className="image-card">
-                  <h3>Original Image</h3>
-                  <img src={originalImage} alt="Original" />
-                </div>
+                <div className="comparison-row">
+                  <div className="image-card">
+                    <h3>Original Image</h3>
+                    <div className="image-wrapper">
+                      <img src={originalImage} alt="Original" />
+                    </div>
+                    {resultImages[0]?.histogramOriginal && (
+                      <div className="histogram-wrapper">
+                        <h4>Original Histogram</h4>
+                        <img src={resultImages[0].histogramOriginal} alt="Original Histogram" />
+                      </div>
+                    )}
+                  </div>
 
-                {resultImages.map((image, index) => (
-                  <div className="image-card" key={index}>
-                    <h3>{image.type}</h3>
-                    <p className="technique-description">{image.description}</p>
-                    <img src={image.url} alt={image.type} />
-                    <a href={image.url} download={`${image.type.toLowerCase().replace(/\s+/g, '_')}_enhanced.png`}>
-                      <button className="download-button">Download</button>
+                  {resultImages.map((image, index) => (
+                    <div className="image-card" key={index}>
+                      <h3>{image.type}</h3>
+                      <div className="image-wrapper">
+                        <img src={image.url} alt={image.type} />
+                      </div>
+                      {image.histogramEqualized && (
+                        <div className="histogram-wrapper">
+                          <h4>Enhanced Histogram</h4>
+                          <img src={image.histogramEqualized} alt="Enhanced Histogram" />
+                        </div>
+                      )}
+                      {image.transformPlot && (
+                        <div className="histogram-wrapper">
+                          <h4>Transformation Plot</h4>
+                          <img src={image.transformPlot} alt="Transformation Plot" />
+                        </div>
+                      )}
+                      {image.histogramPlot && (
+                        <div className="histogram-wrapper">
+                          <h4>Histogram Comparison</h4>
+                          <img src={image.histogramPlot} alt="Histogram Comparison" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {resultImages[0] && (
+                  <div className="download-container">
+                    <a href={resultImages[0].url} download={`${resultImages[0].type.toLowerCase().replace(/\s+/g, '_')}_enhanced.png`}>
+                      <button className="download-button">Download Enhanced Image</button>
                     </a>
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>

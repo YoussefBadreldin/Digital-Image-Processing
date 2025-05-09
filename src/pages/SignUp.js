@@ -1,6 +1,6 @@
 // src/pages/SignUp.js
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import '../styles/SignUp.css';
 import GoogleLogo from "../assets/google-logo.png"; // Adjusted import paths
 import FacebookLogo from "../assets/facebook-logo.png";
@@ -10,10 +10,8 @@ function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Fixed typo: "Confermpassword" to "confirmPassword"
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
-
-  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();

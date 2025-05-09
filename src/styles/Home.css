@@ -179,6 +179,55 @@ button:hover {
   border-color: #0056b3;
 }
 
+.selected-file {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selected-file-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-name {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.change-file-button {
+  background-color: #0f106e;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.change-file-button:hover {
+  background-color: #0056b3;
+}
+
 .file-input {
   display: none;
 }
@@ -297,49 +346,107 @@ button:hover {
 }
 
 .image-comparison {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.comparison-row {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
 }
 
 .image-card {
   background: white;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
 .image-card h3 {
-  color: var(--text-primary);
-  margin-bottom: 10px;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .technique-description {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin-bottom: 15px;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
-.image-card img {
+.image-wrapper {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.histogram-wrapper {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.histogram-wrapper h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.histogram-wrapper img {
   width: 100%;
   height: auto;
-  border-radius: 8px;
-  margin: 10px 0;
+  border-radius: 4px;
+  flex: 1;
+  object-fit: contain;
+}
+
+.download-container {
+  margin-top: 2rem;
+  text-align: center;
+  width: 100%;
 }
 
 .download-button {
-  background-color: #0f106e;
+  background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 1rem 2rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  min-width: 200px;
 }
 
 .download-button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
 
 /* Loading Spinner */

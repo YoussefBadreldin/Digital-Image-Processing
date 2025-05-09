@@ -1,6 +1,6 @@
 // src/pages/SignIn.js
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/SignIn.css";
 import FacebookLogo from "../assets/facebook-logo.png";
 import GoogleLogo from "../assets/google-logo.png";
@@ -9,7 +9,6 @@ import AppleLogo from "../assets/applelogo.png";
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); 
 
   const handleSubmit = (e) => {
     e.preventDefault();

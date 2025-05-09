@@ -1,0 +1,157 @@
+import os
+import cv2
+import matplotlib.pyplot as plt
+import base64
+import numpy as np
+from flask import jsonify
+
+def histogram_equalization(file):
+    try:
+        # Save the uploaded file
+        filepath = os.path.join('Uploads', file.filename)
+        file.save(filepath)
+
+        img = cv2.imread(filepath, 0)  # Read as grayscale
+        if img is None:
+            return jsonify({"error": "Failed to read image"}), 400
+
+        # Calculate original histogram
+        hist_original = cv2.calcHist([img], [0], None, [256], [0, 256])
+        hist_original = hist_original.flatten() / hist_original.sum()
+        
+        # Create histogram plot for original image
+        plt.figure(figsize=(8, 4))
+        plt.plot(hist_original)
+        plt.title('Original Image Histogram')
+        plt.xlabel('Pixel Intensity')
+        plt.ylabel('Normalized Frequency')
+        plt.grid(True)
+        
+        # Save original histogram
+        base_name = os.path.splitext(file.filename)[0]
+        hist_original_path = os.path.join('outputs', f'{base_name}_histogram_original.png')
+        plt.savefig(hist_original_path)
+        plt.close()
+
+        # Apply histogram equalization
+        equalized_image = cv2.equalizeHist(img)
+
+        # Calculate equalized histogram
+        hist_equalized = cv2.calcHist([equalized_image], [0], None, [256], [0, 256])
+        hist_equalized = hist_equalized.flatten() / hist_equalized.sum()
+        
+        # Create histogram plot for equalized image
+        plt.figure(figsize=(8, 4))
+        plt.plot(hist_equalized)
+        plt.title('Equalized Image Histogram')
+        plt.xlabel('Pixel Intensity')
+        plt.ylabel('Normalized Frequency')
+        plt.grid(True)
+        
+        # Save equalized histogram
+        hist_equalized_path = os.path.join('outputs', f'{base_name}_histogram_equalized.png')
+        plt.savefig(hist_equalized_path)
+        plt.close()
+
+        # Save the enhanced image
+        output_filepath = os.path.join('outputs', f'{base_name}_histogram_equalized.jpg')
+        cv2.imwrite(output_filepath, equalized_image)
+
+        # Read all images and convert to base64
+        with open(output_filepath, 'rb') as img_file:
+            img_data = base64.b64encode(img_file.read()).decode('utf-8')
+        with open(hist_original_path, 'rb') as hist_file:
+            hist_original_data = base64.b64encode(hist_file.read()).decode('utf-8')
+        with open(hist_equalized_path, 'rb') as hist_file:
+            hist_equalized_data = base64.b64encode(hist_file.read()).decode('utf-8')
+
+        return jsonify({
+            "success": True,
+            "image": img_data,
+            "histogram_original": hist_original_data,
+            "histogram_equalized": hist_equalized_data,
+            "filename": os.path.basename(output_filepath)
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def gray_level_slicing(file, min_val, max_val):
+    try:
+        # Save the uploaded file
+        filepath = os.path.join('Uploads', file.filename)
+        file.save(filepath)
+
+        img = cv2.imread(filepath, 0)  # Read as grayscale
+        if img is None:
+            return jsonify({"error": "Failed to read image"}), 400
+
+        # Calculate original histogram
+        hist_original = cv2.calcHist([img], [0], None, [256], [0, 256])
+        hist_original = hist_original.flatten() / hist_original.sum()
+
+        # Create transformation plot
+        plt.figure(figsize=(8, 4))
+        x = np.arange(256)
+        y = np.zeros(256)
+        y[min_val:max_val+1] = 255
+        plt.plot(x, y, 'r-', linewidth=2)
+        plt.title('Gray Level Slicing Transformation')
+        plt.xlabel('Input Pixel Intensity')
+        plt.ylabel('Output Pixel Intensity')
+        plt.grid(True)
+        plt.axvline(x=min_val, color='g', linestyle='--', label=f'Min Value: {min_val}')
+        plt.axvline(x=max_val, color='g', linestyle='--', label=f'Max Value: {max_val}')
+        plt.legend()
+        
+        # Save transformation plot
+        base_name = os.path.splitext(file.filename)[0]
+        transform_path = os.path.join('outputs', f'{base_name}_gray_slice_transform.png')
+        plt.savefig(transform_path)
+        plt.close()
+
+        # Apply gray level slicing
+        output_image = np.copy(img)  # Copy original image
+        output_image[(img >= min_val) & (img <= max_val)] = 255
+
+        # Calculate output histogram
+        hist_output = cv2.calcHist([output_image], [0], None, [256], [0, 256])
+        hist_output = hist_output.flatten() / hist_output.sum()
+
+        # Create histogram comparison plot
+        plt.figure(figsize=(8, 4))
+        plt.plot(hist_original, label='Original', alpha=0.7)
+        plt.plot(hist_output, label='After Slicing', alpha=0.7)
+        plt.title('Histogram Comparison')
+        plt.xlabel('Pixel Intensity')
+        plt.ylabel('Normalized Frequency')
+        plt.grid(True)
+        plt.legend()
+        
+        # Save histogram comparison
+        hist_path = os.path.join('outputs', f'{base_name}_gray_slice_hist.png')
+        plt.savefig(hist_path)
+        plt.close()
+
+        # Save the enhanced image
+        output_filepath = os.path.join('outputs', f'{base_name}_gray_level_sliced.jpg')
+        cv2.imwrite(output_filepath, output_image)
+
+        # Read all images and convert to base64
+        with open(output_filepath, 'rb') as img_file:
+            img_data = base64.b64encode(img_file.read()).decode('utf-8')
+        with open(transform_path, 'rb') as transform_file:
+            transform_data = base64.b64encode(transform_file.read()).decode('utf-8')
+        with open(hist_path, 'rb') as hist_file:
+            hist_data = base64.b64encode(hist_file.read()).decode('utf-8')
+
+        return jsonify({
+            "success": True,
+            "image": img_data,
+            "transform_plot": transform_data,
+            "histogram_plot": hist_data,
+            "filename": os.path.basename(output_filepath)
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500 
