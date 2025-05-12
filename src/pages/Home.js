@@ -10,6 +10,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("about");
+  const [params, setParams] = useState({});
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -53,6 +54,15 @@ function Home() {
 
   const handleTechniqueChange = (e) => {
     setSelectedTechnique(e.target.value);
+    // Reset parameters when technique changes
+    setParams({});
+  };
+
+  const handleParamChange = (e) => {
+    setParams({
+      ...params,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -61,13 +71,40 @@ function Home() {
 
     setLoading(true);
     setOriginalImage(URL.createObjectURL(selectedFile));
+    setResultImages([]);
 
     let formData = new FormData();
     formData.append("image", selectedFile);
 
+    // Add parameters based on technique
+    if (selectedTechnique === "gray_level_slicing") {
+      formData.append("min_val", params.min_val || 100);
+      formData.append("max_val", params.max_val || 150);
+    } else if (selectedTechnique === "power_law") {
+      formData.append("gamma", params.gamma || 0.5);
+    }
+
     try {
+      let endpoint;
+      switch(selectedTechnique) {
+        case "histogram_equalization":
+          endpoint = "/enhance/histogram_equalization";
+          break;
+        case "gray_level_slicing":
+          endpoint = "/enhance/gray_level_slicing";
+          break;
+        case "power_law":
+          endpoint = "/enhance/power_law";
+          break;
+        case "negative":
+          endpoint = "/enhance/negative";
+          break;
+        default:
+          throw new Error("Invalid enhancement technique");
+      }
+
       const response = await fetch(
-        `http://127.0.0.1:5000/enhance/${selectedTechnique}`,
+        `http://127.0.0.1:5000${endpoint}`,
         {
           method: "POST",
           body: formData,
@@ -86,15 +123,23 @@ function Home() {
           type: getEnhancementTypeName(selectedTechnique),
           description: getEnhancementDescription(selectedTechnique),
           url: imageURL,
+          params: params
         };
 
-        // Add visualization data if available
-        if (selectedTechnique === 'histogram_equalization' && data.histogram_original && data.histogram_equalized) {
-          result.histogramOriginal = `data:image/png;base64,${data.histogram_original}`;
-          result.histogramEqualized = `data:image/png;base64,${data.histogram_equalized}`;
-        } else if (selectedTechnique === 'gray_level_slicing' && data.transform_plot && data.histogram_plot) {
-          result.transformPlot = `data:image/png;base64,${data.transform_plot}`;
-          result.histogramPlot = `data:image/png;base64,${data.histogram_plot}`;
+        // Add visualization data only for histogram equalization
+        if (selectedTechnique === "histogram_equalization") {
+          if (data.histogram_original) {
+            result.histogramOriginal = `data:image/png;base64,${data.histogram_original}`;
+          }
+          if (data.histogram_equalized) {
+            result.histogramEqualized = `data:image/png;base64,${data.histogram_equalized}`;
+          }
+          if (data.transform_plot) {
+            result.transformPlot = `data:image/png;base64,${data.transform_plot}`;
+          }
+          if (data.histogram_plot) {
+            result.histogramPlot = `data:image/png;base64,${data.histogram_plot}`;
+          }
         }
 
         setResultImages([result]);
@@ -127,6 +172,59 @@ function Home() {
       negative: "Inverts the image colors to create a negative effect"
     };
     return descriptions[type] || "";
+  };
+
+  const renderParameters = () => {
+    switch(selectedTechnique) {
+      case "gray_level_slicing":
+        return (
+          <div className="parameters-container">
+            <h4>Gray-level Slicing Parameters</h4>
+            <div className="parameter-input">
+              <label>Minimum Value (0-255):</label>
+              <input
+                type="number"
+                name="min_val"
+                min="0"
+                max="255"
+                value={params.min_val || 100}
+                onChange={handleParamChange}
+              />
+            </div>
+            <div className="parameter-input">
+              <label>Maximum Value (0-255):</label>
+              <input
+                type="number"
+                name="max_val"
+                min="0"
+                max="255"
+                value={params.max_val || 150}
+                onChange={handleParamChange}
+              />
+            </div>
+          </div>
+        );
+      case "power_law":
+        return (
+          <div className="parameters-container">
+            <h4>Power-Law Parameters</h4>
+            <div className="parameter-input">
+              <label>Gamma Value:</label>
+              <input
+                type="number"
+                name="gamma"
+                step="0.1"
+                min="0.1"
+                max="5.0"
+                value={params.gamma || 0.5}
+                onChange={handleParamChange}
+              />
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -172,7 +270,6 @@ function Home() {
               <li>20100294 - Youssef Mohamed Badreldin</li>
               <li>22100951 - Alhassan Mohamed Elsayed</li>
               <li>22100859 - Hicham Hussein Mohamed</li>
-
             </ul>
           </div>
         </div>
@@ -240,6 +337,8 @@ function Home() {
             </div>
           </div>
 
+          {selectedTechnique && renderParameters()}
+
           {error && <p className="error-message">{error}</p>}
 
           <button 
@@ -272,22 +371,29 @@ function Home() {
                   {resultImages.map((image, index) => (
                     <div className="image-card" key={index}>
                       <h3>{image.type}</h3>
+                      {image.params && (
+                        <div className="params-display">
+                          {image.params.min_val && <p>Min: {image.params.min_val}</p>}
+                          {image.params.max_val && <p>Max: {image.params.max_val}</p>}
+                          {image.params.gamma && <p>Gamma: {image.params.gamma}</p>}
+                        </div>
+                      )}
                       <div className="image-wrapper">
                         <img src={image.url} alt={image.type} />
                       </div>
-                      {image.histogramEqualized && (
+                      {image.histogramEqualized && selectedTechnique === "histogram_equalization" && (
                         <div className="histogram-wrapper">
                           <h4>Enhanced Histogram</h4>
                           <img src={image.histogramEqualized} alt="Enhanced Histogram" />
                         </div>
                       )}
-                      {image.transformPlot && (
+                      {image.transformPlot && selectedTechnique === "histogram_equalization" && (
                         <div className="histogram-wrapper">
                           <h4>Transformation Plot</h4>
                           <img src={image.transformPlot} alt="Transformation Plot" />
                         </div>
                       )}
-                      {image.histogramPlot && (
+                      {image.histogramPlot && selectedTechnique === "histogram_equalization" && (
                         <div className="histogram-wrapper">
                           <h4>Histogram Comparison</h4>
                           <img src={image.histogramPlot} alt="Histogram Comparison" />
